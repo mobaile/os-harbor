@@ -1,6 +1,8 @@
 # OS Harbor 0.1.0 完整使用说明
 
-OS Harbor 是在 Windows 上运行的命令行工具，用来登记系统镜像、调用官方 VentoyVlnk 生成链接，并把链接和菜单配置部署到已安装 Ventoy 的 U 盘。**系统文件保存在本机 SSD 的镜像文件里，U 盘负责引导和菜单。** 启动后系统直接使用真实硬件；制作镜像时才使用虚拟机。
+> **历史实验资料，未经端到端验证，仅供源码与思路参考。本文描述较早的 Ventoy 路线，不实现当前 RAW 构想，不是推荐执行的安装教程。项目目前没有继续开发计划。文中路径与盘符均为虚构示例；实际执行可能修改磁盘或配置。当前项目定位见 [README](../README.md)，设计思路见 [CONCEPT](CONCEPT.md)。**
+
+OS Harbor 是在 Windows 上运行的命令行工具，用来登记系统镜像、调用官方 VentoyVlnk 生成链接，并把链接和菜单配置部署到已安装 Ventoy 的 U 盘。**系统文件保存在本机 SSD 的镜像文件里，U 盘负责引导和菜单。** 这条历史路线的目标是裸机运行；本项目未验证实际启动。
 
 当前版本是原型：没有图形界面，不会自动安装操作系统。Windows 和 Omarchy 的真实裸机启动尚未完成验收，Omarchy 路线尤其属于实验性。`boot: pending` 表示未证明能启动，不能把它理解为成功。
 
@@ -45,7 +47,7 @@ OS Harbor 是在 Windows 上运行的命令行工具，用来登记系统镜像�
 下文命令均在 **Windows PowerShell / PowerShell 终端**运行，只有 Omarchy 准备部分特别标明在 Linux 内运行。不要把提示说明或输出 JSON 当作命令执行。
 
 ```powershell
-Set-Location -LiteralPath 'D:\CodeProjects\os-harbor'
+Set-Location -LiteralPath 'C:\Example\os-harbor'
 python --version
 python -m osharbor --help
 python -m osharbor --version
@@ -56,12 +58,12 @@ python -m osharbor --version
 如果 `python` 打开 Microsoft Store、找不到命令或不是所需版本，先试 `py -3 --version`，之后统一用 `py -3 -m osharbor ...`。也可以指定实际解释器：
 
 ```powershell
-$PythonExe = 'C:\Users\mobai\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe'
+$PythonExe = 'C:\Example\Python\python.exe'
 & $PythonExe --version
 & $PythonExe -m osharbor --help
 ```
 
-上面是此前本机验证过的解释器路径，不是每台电脑都有；路径失效时换成自己的 Python 路径。后面的 `python` 命令也要统一替换成 `& $PythonExe`。
+上面是虚构的解释器路径，不代表任何实际设备；阅读代码示例时应自行解析其含义。后面的 `python` 命令也要统一替换成 `& $PythonExe`。
 
 从源码目录直接运行不需要安装项目依赖，核心仅使用 Python 标准库。希望注册独立命令时可选执行：
 
@@ -86,7 +88,7 @@ osharbor --help
 D:\Systems\
   Windows11.vhdx
   Omarchy.vhd.vtoy
-D:\CodeProjects\os-harbor\
+C:\Example\os-harbor\
   tools\                    官方工具发行包和来源记录
   state\systems.json        首次成功登记后自动生成
   artifacts\build-001\      首次成功构建后生成
@@ -156,10 +158,10 @@ Get-FileHash -LiteralPath 'F:\ventoy\ventoy_vhdboot.img' -Algorithm SHA256
 
 已经拥有符合下列条件的离线镜像，可以直接到第 5 节。只有 ISO 时必须先完成安装；重命名 ISO 或 VMDK 的后缀不会把它变成有效 VHDX / VHD。
 
-此前 2026-09-10 的扫描记录找到以下安装介质，文件名中的版本尚未通过内部信息或官方校验确认，路径也需要在使用前确认仍存在：
+以下仅为虚构的安装介质路径，不代表已经获取或验证任何 ISO：
 
-- Windows：`D:\VMwareMachine\zh-cn_windows_11_business_editions_version_25h2_updated_aug_2026_x64_dvd_eab7a27b.iso`
-- Omarchy：`D:\VMwareMachine\omarchy-4.0.2.iso`
+- Windows：`C:\Example\ISO\Windows.iso`
+- Omarchy：`C:\Example\ISO\Omarchy.iso`
 
 使用前从对应发行方核对来源与校验信息。下面的镜像制作步骤是待实机验收的路线，不能据此认定具体系统版本已经兼容。
 
@@ -579,7 +581,7 @@ Remove-Item -LiteralPath 'F:\ventoy\.osharbor.lock'
 
 ## 12. 当前验证范围与开发者检查
 
-截至仓库原有 2026-09-10 验证记录：Python 单元/流程测试 19 项通过，CLI 帮助和 PowerShell 语法通过；本机 UEFI 与当时的 `F:` Ventoy U 盘只读检查通过；发现 Windows 和 Omarchy ISO。该记录是历史结果，不表示当前 U 盘盘符、文件或工具状态不变。
+历史记录仅说明曾有 19 项 Python 单元/流程测试及 CLI 帮助、PowerShell 语法检查通过。此前主机只读检查的设备资料不在公开文档中保留。这些结果不证明任何裸机启动能力。
 
 尚未完成：官方 VentoyVlnk 真实执行、真实 U 盘部署、Windows VHDX 裸机启动、Omarchy 固定 VHD 裸机启动、GPU/网络/更新后启动、拔 U 盘原 Windows 直启和 ESP/BCD 前后验收。测试使用临时目录和链接生成器替身，不能代替这些检查。
 

@@ -1,15 +1,10 @@
 # 镜像制作与实机验收
 
-## 已发现安装介质
+> **历史实验资料，未经端到端验证，仅供源码与思路参考。本文描述较早的 Ventoy 路线，不实现当前 RAW 构想，不是推荐执行的安装教程。项目目前没有继续开发计划。文中路径与盘符均为虚构示例；实际执行可能修改磁盘或配置。当前项目定位见 [README](../README.md)，设计思路见 [CONCEPT](CONCEPT.md)。**
 
-2026-09-10 只读扫描 `D:\VMwareMachine`：
+## 安装介质说明
 
-| 类型 | 文件 | 大小（字节） |
-|---|---|---:|
-| Omarchy | `D:\VMwareMachine\omarchy-4.0.2.iso` | 6227752960 |
-| Windows | `D:\VMwareMachine\zh-cn_windows_11_business_editions_version_25h2_updated_aug_2026_x64_dvd_eab7a27b.iso` | 8846692352 |
-
-版本来自文件名，尚未验证 ISO 内部版本、发布者签名或官方校验和。ISO 不是已安装系统，不能直接登记为 VHD。另有现存 Omarchy VMware 虚拟机（UEFI、分卷 VMDK、有挂起状态文件）；不覆盖其虚拟磁盘，不直接复制挂起中的磁盘作为一致性镜像，也不把 WSL 的 ext4.vhdx 当 Windows 镜像。
+原笔记中的本机介质清单、大小和虚拟机状态已移除。历史方案需要 Windows 或 Omarchy 官方安装介质；ISO 是安装包，不是已安装系统磁盘。不得把挂起中的虚拟盘复制当成一致性备份，也不能把 WSL 的 ext4.vhdx 当作 Windows 系统镜像。
 
 ## Windows 11
 
