@@ -1,0 +1,18 @@
+# 部署与恢复
+
+部署先校验全部输入，再把旧 ventoy.json 原始字节保存到 `ventoy/os-harbor-backups/<事务ID>/ventoy.json`。`recovery.json` 记录原配置是否存在和提交状态。随后写入独立代次链接，最后原子替换菜单配置。
+
+进程异常发生在配置提交前：旧配置仍有效；写入但未引用的代次保留，不影响旧链接。若提交成功但最终状态记录失败，状态可能仍为 prepared；以实际配置为准。断电时 exFAT 不保证跨文件事务持久性，重新连接后检查配置并恢复备份。
+
+恢复步骤：
+
+1. 退出所有部署进程，确认目标是正确 Ventoy 数据分区。
+2. 检查备份 recovery.json。若 config_existed=true，将对应备份 ventoy.json 复制回数据分区 `ventoy/ventoy.json`；先另存当前配置供比较。
+3. 若原配置不存在，将新配置移到备份目录，不要恢复成旧代次的配置。
+4. 运行 verify，或启动 Ventoy 检查原有条目。恢复旧配置后新 bundle 的 verify 不应通过。
+
+强制终止可能留下 `ventoy/.osharbor.lock`。只有确认没有部署进程仍运行时才手工移除。正常异常退出会自动释放锁。
+
+旧 `/os-harbor/<代次>/` 文件不自动删除。Ventoy 默认扫描时可能显示旧链接；验证新代次后，把旧代次完整移到U盘之外的备份目录。不要仅删除旧菜单别名而仍期待文件不可见。一个 bundle 重复部署不会增加条目。
+
+遇到未知或无法解析的 ventoy.json：修复或用 VentoyPlugson 核实，不用空配置覆盖。模式专用别名、image_list/blacklist 需用户手工整合后再部署。
