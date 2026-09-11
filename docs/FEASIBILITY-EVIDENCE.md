@@ -4,6 +4,8 @@
 
 目标与约束见[第二版构想](CONCEPT.md)，实际检查记录见[VALIDATION](VALIDATION.md)。
 
+[理想目标与使用体验](IDEAL-IMPLEMENTATION.md)独立描述希望最终实现的完整功能。本文只记录已有机制能证明什么，不指定最终技术路线，不代表未来能力的上限，也不以这些机制的不足缩减理想目标。
+
 ## 1. 分区作为完整磁盘的存储后端
 
 [dm-linear 官方文档](https://docs.kernel.org/admin-guide/device-mapper/linear.html)描述了块设备区域之间的线性映射。这为“物理承载分区 → 独立块设备视图”提供基础，无需先创建外层文件系统和 RAW 文件。
